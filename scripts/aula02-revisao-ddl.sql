@@ -65,5 +65,20 @@ references departamento(numero)
 on delete no action
 on update cascade;
 
--- TO DO: adicionar restrições FK para cpf_supervisor e cpf_departamento.
+-- TO DO: adicionar restrições FK para cpf_supervisor e cpf_gerente.
 
+-- 1. Restrição para o Supervisor (Tabela Funcionario aponta para ela mesma)
+alter table funcionario 
+add constraint funcionario_supervisor_fk
+foreign key (cpf_supervisor)
+references funcionario(cpf)
+on delete set null
+on update cascade;
+
+-- 2. Restrição para o Gerente (Tabela Departamento aponta para Funcionario)
+alter table departamento
+add constraint departamento_gerente_fk
+foreign key (cpf_gerente)
+references funcionario(cpf)
+on delete no action
+on update cascade;
