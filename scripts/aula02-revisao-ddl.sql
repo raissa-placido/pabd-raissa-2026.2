@@ -14,47 +14,49 @@ create table funcionario(
     cpf_supervisor char(11),
     numero_departamento smallint,
 
-    constraint funcionario_salario_check
-    check (salario >= 2000 and salario <= 15000)
-);
+    constraint funcionario_salario_check check (salario >= 2000 and salario <= 15000));
+
+    constraint funcionario_sexo_check] check (lower(sexo) in ('m', 'f', 'o'));
+
 
 create table departamento(
     numero smallint primary key,
     nome varchar(50) unique,
-    cpf_gerente char(11)
-    
-);
+    cpf_gerente char(11),
+    data_ini set not null default now()
+        
+    );
 
 -- adicionar um novo atributo
-alter table departamento
-add column data_ini date;
+--alter table departamento
+--add column data_ini date;
 
 -- alterar um atributo para not nul
-alter table departamento
-alter column data_ini set not null;
+--alter table departamento
+--alter column data_ini set not null;
 
 -- excluir um atributo
 
-alter table departamento
-drop column data_ini;
+--alter table departamento
+--drop column data_ini;
 
 -- adicionar uma restrição padrão
 alter table funcionario
 alter column endereco set default 'Macau-RN';
 
 -- excluir um valor padrão default
-alter table funcionario
-alter column endereco drop default;
+--alter table funcionario
+--alter column endereco drop default;
 
 -- adicionar restrição (constraint) CHECK
-alter table funcionario
-add constraint funcionario_sexo_check]
-check (lower(sexo) in ('m', 'f', 'o'));
+--alter table funcionario
+--add constraint funcionario_sexo_check]
+--check (lower(sexo) in ('m', 'f', 'o'));
 -- or (sexo in ('m', 'f', 'o', 'M', 'F', 'O'));
 
 -- excluir restrição
-alter table funcionario
-drop constraint if exists funcionario_sexo_check;
+--alter table funcionario
+--drop constraint if exists funcionario_sexo_check;
 
 -- adicionar restrição FOREIGN KEY
 alter table funcionario 
@@ -69,7 +71,7 @@ on update cascade;
 
 -- 1. Restrição para o Supervisor (Tabela Funcionario aponta para ela mesma)
 alter table funcionario 
-add constraint funcionario_supervisor_fk
+add constraint funcionario_cpf_sup_fk
 foreign key (cpf_supervisor)
 references funcionario(cpf)
 on delete set null
@@ -77,7 +79,7 @@ on update cascade;
 
 -- 2. Restrição para o Gerente (Tabela Departamento aponta para Funcionario)
 alter table departamento
-add constraint departamento_gerente_fk
+add constraint departamento_cpf_gerente_fk
 foreign key (cpf_gerente)
 references funcionario(cpf)
 on delete no action
