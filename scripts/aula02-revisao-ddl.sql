@@ -14,19 +14,23 @@ create table funcionario(
     cpf_supervisor char(11),
     numero_departamento smallint,
 
-    constraint funcionario_salario_check check (salario >= 2000 and salario <= 15000));
+    constraint funcionario_salario_check 
+    check (salario >= 2000 and salario <= 15000),
 
-    constraint funcionario_sexo_check] check (lower(sexo) in ('m', 'f', 'o'));
+    constraint funcionario_sexo_check 
+    check (lower(sexo) in ('m', 'f', 'o'))
+);
 
 
 create table departamento(
     numero smallint primary key,
     nome varchar(50) unique,
     cpf_gerente char(11),
-    data_ini set not null default now()
+    data_ini date not null
         
     );
 
+/*
 -- adicionar um novo atributo
 --alter table departamento
 --add column data_ini date;
@@ -84,3 +88,4 @@ foreign key (cpf_gerente)
 references funcionario(cpf)
 on delete no action
 on update cascade;
+*/
