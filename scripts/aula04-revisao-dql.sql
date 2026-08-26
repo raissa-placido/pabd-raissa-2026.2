@@ -161,6 +161,120 @@ left join funcionario s
    on f.cpf_supervisor = s.cpf
 order by s.pnome nulls last, f.pnome, f.unome;
 
+-- Mudanças para visualizar FULL JOIN
+
+-- inserindo funcionario sem departamento
+update funcionario
+set numero_departamento = null
+where cpf = '22233344455';
+
+-- inseridno departamento sem gerente
+insert into departamento(numero, nome, cpf_gerente, data_ini)
+values(4, 'makerting', null, current_date);
+
+select 
+    coalesce(d.nome, 'Sem departamento') departamento,
+    coalesce(f.pnome || ' '|| f.unome, 'Sem funcionário') funcionario
+from departamento d
+full join funcionario f 
+    on d.numero = f.numero_departamento
+order by departamento nulls last, funcionario nulls last;
+
 -- exists, not exists
 
+--Listar funcionários que são gerentes de qualquer departamento
+select 
+    f.pnome || ' '|| f.unome funcionario
+from funcionario f 
+where exists (
+    select *
+    from departamento d
+    where d.cpf_gerente = f.cpf
+)
+order by funcionario;
+
+--Listar funcionários que não são gerentes 
+select 
+    f.pnome || ' '|| f.unome funcionario
+from funcionario f 
+where not exists (
+    select *
+    from departamento d
+    where d.cpf_gerente = f.cpf
+)
+order by funcionario;
+
+
 -- Funções de agrupamento: group by, having
+
+-- Qual o salário médio dos funcionários em cada departamento?
+
+select 
+    numero_departamento,
+    round(avg(salario),2) media_salarial
+from funcionario
+group by numero_departamento
+order by numero_departamento;
+
+
+-- Qual o salário médio dos funcionários em cada departamento sem valores nulos?
+
+select 
+    numero_departamento,
+    round(avg(salario),2) media_salarial
+from funcionario
+where numero_departamento is not null -- where: filtragem antes do agrupamento
+group by numero_departamento
+order by numero_departamento;
+
+
+
+-- Qual o salário médio dos funcionários em cada departamento sem valores nulos? Utilizando HAVING
+
+select 
+    numero_departamento,
+    round(avg(salario),2) media_salarial
+from funcionario
+group by numero_departamento
+having numero_departamento is not null -- having: filtragem após o agrupamento
+order by numero_departamento;
+
+-- Qual o número de funcionários que trabalha em cada departamento?
+
+select 
+    numero_departamento,
+    count(*) quantidade_funcionarios
+from funcionario
+group by numero_departamento -- quem é o atributo de agrupamento?
+order by numero_departamento;
+
+I
+--Listar: numero e nome do departamento, quantidade de funcionários, média salarial e folha salarial
+
+select
+d. numero numero_departamento,
+    d.nome nome_departamento,
+    count(*) qtd_funcionarios,
+    round(avg(f.salario), 2) media_sal,
+    sum(f.salario) folha_salarial
+from funcionario f
+
+right join departamento d
+    on f.numero_departamento = d.numero
+group by d.numero
+order by numero_departamento;
+
+--Listar: numero e nome do departamento, quantidade de funcionários, média salarial e folha salarial
+
+select
+d. numero numero_departamento,
+    d.nome nome_departamento,
+    count(f.cpf) qtd_funcionarios,
+    round(avg(f.salario), 2) media_sal,
+    sum(f.salario) folha_salarial
+from funcionario f
+
+right join departamento d
+    on f.numero_departamento = d.numero
+group by d.numero
+order by numero_departamento;
