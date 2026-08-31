@@ -83,6 +83,8 @@ INSERT INTO orders_products (order_id, product_id, quantity, unit_price) VALUES
     (10, 1, 1, 4500.00);
 
 
+-- MINHAS CONTRIBUIÇÕES COMEÇAM AQUI --
+
 -- 1. Liste os produtos com preço superior a R$ 1000.
 
 select name, price from products
