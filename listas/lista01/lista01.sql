@@ -210,3 +210,6 @@ from users u
 left join orders o on u.id = o.user_id
 group by u.id, u.name
 order by valor_total_comprado desc, quantidade_de_pedidos desc;
+
+
+-- select id, order_date at time zone 'America/Fortaleza' from orders order by order_date;
